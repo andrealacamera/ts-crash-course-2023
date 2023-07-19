@@ -22,3 +22,27 @@ console.log(rgb) // the result...
 
 // Enums are a feature added to JavaScript by TypeScript which allows for describing a value which could be one of a set of possible named constants. Unlike most TypeScript features, this is not a type-level addition to JavaScript but something added to the language and runtime. Because of this, it’s a feature which you should know exists, but maybe hold off on using unless you are sure.
 
+// For example, in the case of airplane seat:
+enum seatChoice {
+  AISLE, 
+  MIDDLE,
+  WINDOW
+}
+
+const seat = seatChoice.AISLE  // each item automatically gets 0,1,2,etc value. AISLE=0 but we can initialize the enum with default values (number, string, etc)
+// For example, starting from 1, the other items are 2,3, and 4. Magic!
+enum Direction {
+  UP = 1,
+  DOWN, 
+  LEFT,
+  RIGTH
+}
+
+
+
+// A very important thing is the compiled code (TS -> JS). See with playground the differences between the compiled code "enum seatChoice" vs "const enum searChoice" (less and cleaner code!)
+
+
+
+
+export {}
