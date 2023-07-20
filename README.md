@@ -6,11 +6,9 @@
 
 2. Functions. Objects, Type Aliases and Property modifiers. Arrays. Union. Tuples and Enums. Interfaces, Interface vs Type.
 
-- How to setup Typescript for real projects
+3. How to setup Typescript for real projects.
 
-- Classes, Private Public, Getters and Setters, Protected
-
-- Why Interface is important, Abstract class 
+4. Classes, Private and Public, Getters and Setters, Protected. Why Interface is important (Class Heritage). Abstract classes.
 
 - Generics, Generics in Array and Arrow functions, Generic Classes
 
@@ -154,10 +152,95 @@ interface Name {
 
 > Remark! WRT Type aliases there's no = sign.
 
+## Lesson 3
+
+### 1 - How to setup Typescript for real projects.
+
+We already installed the `tsc` globally. In order to configure the compiler we need a `tsconfig.json` that can be obtained by `tsc --init`.
+
+A lot of options are in the file, we can read and change for our goals. In Playground we have the same configuration (more or less) and we can explore the differences or read the documentation. For example: we can set the source (`rootDir`) and the destination (`outDir`) folders 
+
+After that we can setup a node `package.json` file with `npm init`. 
+
+In the project we can add the `index.html` file and import the JS script (the compiled one!) we need. 
+
+We can launch the "watch" version of TSC with `tsc -w` that recompile every time a new version is saved on the folder.
+
+> Remark: In VSCode we can use Live Server (Go Live) or [Lite Server](https://www.npmjs.com/package/lite-server). See also the package.json script (the server will open the page on port 3000, UI on port 3001)
+
+
+
+## Lesson 4
+
+### 1 - Classes
+
+A field declaration creates a public writeable property on a class. We can then use the prop in the `constructor` method.
+
+Fields may be prefixed with the `readonly` modifier. This prevents assignments to the field outside of the constructor.
+
+### 2 - Private and Public
+
+We can use TypeScript to control whether certain methods or properties are visible to code outside the class. In general we are speaking of Member Visibility (or Access Modifiers).
+
+The `readonly` keyword does not prevent the access of the field outside the class. To do so, we can use `private` modifier. 
+
+> In JS the `private` keyword can be replaced by `#`. For example: `private name` and `#name` are the same.
+
+`public` is the opposite. The field is accessible outside the class. 
+
+TypeScript offers special syntax for turning a constructor parameter into a class property with the same name and value. These are called _parameter properties_ and are created by prefixing a constructor argument with one of the visibility modifiers `public`, `private`, `protected`, or `readonly`.
+
+### 3 - Getters and Setters
+
+Classes can also have _accessors_.
+
+```ts
+class C {
+	_length: number = 0;
+	get length(): number {
+		return this._length;
+	}
+	set length(value:number) {
+		this._length = value;
+	}
+}
+```
+
+TypeScript has some special inference rules for accessors:
+
+- If `get` exists but no `set`, the property is automatically `readonly`
+- If the type of the setter parameter is not specified, it is inferred from the return type of the getter
+- Getters and setters must have the same [Member Visibility](https://www.typescriptlang.org/docs/handbook/2/classes.html#member-visibility)
+
+### 4 - Protected
+
+`protected` members are only visible to subclasses of the class they’re declared in. The protected member cannot be accessible from outside the class (or subclass).
+
+> Remark: `private` is like `protected`, but doesn’t allow access to the member even from subclasses.
+
+### 5 - Interfaces (reprise) and Class Heritage
+
+Working with classes, Interface can be useful to give a rule to be satisfied.
+
+We can use `implements` clause to check if the class fulfil the interface(s). 
+
+> Remark! an `implements` clause is only a check that the class can be treated as the interface type. It doesn’t change the type of the class or its methods _at all_. A common source of error is to assume that an `implements` clause will change the class type - it doesn’t!
+> Similarly, implementing an interface with an optional property doesn’t create that property.
+
+### 5 - Abstract Classes
+
+Classes, methods, and fields in TypeScript may be _abstract_.
+
+An _abstract method_ or _abstract field_ is one that hasn’t had an implementation provided. These members must exist inside an _abstract class_, which cannot be directly instantiated.
+
+The role of abstract classes is to serve as a base class for subclasses which do implement all the abstract members. When a class doesn’t have any abstract members, it is said to be _concrete_.
+
+| Interfaces | Abstract |
+|------------|----------|
+| `implements` | `extends`  |
 
 
 ## References
 
 - [Full video](https://youtu.be/30LWjhZzg50)
 - [TypeScriptLang](https://www.typescriptlang.org/)
-
