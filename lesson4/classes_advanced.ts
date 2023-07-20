@@ -37,17 +37,45 @@ console.log(cc.length) // getter is called
 // We can also define private methods (as done for fields).
 
 class Point {
-  private _distance: number
   constructor(
     public x: number,
     public y: number
   ) {}
   
+  private dist(x:number, y:number): number {
+    let D = Math.sqrt(x*x + y*y)
+    return D
+  }
+
   get distance(): number {
-    return Math.sqrt(this.x ** 2 + this.y ** 2)
+    return this.dist(this.x, this.y)
   }
 
 }
 
 let p = new Point(4,5)
 console.log(p.distance)
+
+
+
+// Last access modifier is `protected`. We use protected members as private members, but they are visible to subclasses of the class.
+
+class Greeter {
+  public greet() {
+    console.log("Hello, " + this.getName());
+  }
+  protected getName() {
+    return "Andrea";
+  }
+}
+ 
+class SpecialGreeter extends Greeter {
+  public howdy() {
+    // OK to access protected member here
+    console.log("Howdy, " + this.getName());
+  }
+}
+const g = new SpecialGreeter();
+g.greet(); // OK
+g.howdy(); // OK
+g.getName(); // Error, protected method!
