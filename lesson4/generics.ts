@@ -25,4 +25,23 @@ identity(a)
 
 // If we intented to work with arrays of Type, we can use Type[]. Alternatively we can write Array<Type> (as seen in lesson 2 - Arrays)
 
+//Example:
+function getSomething<T>( products: T[]): T {
+  return products[0] // first product of products has type T
+}
+
+// Arrow function version -> We add <T> BEFORE the arrow function () => {}
+const getMoreSomething = <T>(products: T[]): T => {
+  // do something
+  return products[0]
+}
+
+// One line arrow function
+const getMoreSomething2 = <T>(products: T[]): T => products[0]
+
+
+// When we use JSX / TSX syntax (React, etc) it's common to find a comma after the <Type> (i.e. <Type,>).It's done to understand it's a type parameter and not a JSX element
+
+
+
 
