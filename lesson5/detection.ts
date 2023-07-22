@@ -97,3 +97,49 @@ function getFood2( pet: Fish | Bird) {
   return "bird food"
 }
 
+// Discriminated Union
+interface Circle {
+  kind: "circle"
+  radius: number
+}
+interface Square {
+  kind: "square"
+  side: number
+}
+interface Rectangle {
+  kind: "rectangle"
+  length: number
+  width: number
+}
+
+type Shape = Circle | Rectangle | Square
+
+function getShapeArea (shape: Shape) {
+  if (shape.kind === 'circle') {
+    return Math.PI * shape.radius ** 2
+  }
+  if (shape.kind === 'square') {
+    return shape.side ** 2
+  }
+  if (shape.kind === 'rectangle') {
+    return shape.length * shape.width
+  }
+}
+// The same checking works with switch statements as well. 
+function getArea2 (shape: Shape) {
+  switch (shape.kind) {
+    case "circle":
+      return Math.PI * shape.radius ** 2
+    case "rectangle":
+      return shape.length * shape.width
+    case "square":
+      return shape.side ** 2
+    default: 
+      const _anyname: never = shape
+      return _anyname  
+  }
+}
+
+// BUT! If we add a new shape to Shape (e.g. Triangle), the above function will cause a TypeScript error: Type 'Triangle' is not assignable to type 'never'. that's because we must add a new case to the switch and be sure to perform the exhaustiveness checking!
+
+// in other words: the default is never reached! never executed! NEVER!
