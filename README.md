@@ -8,13 +8,9 @@
 
 3. How to setup Typescript for real projects.
 
-4. Classes, Private and Public, Getters and Setters, Protected. Why Interface is important (Class Heritage). Abstract classes.
+4. Classes, Private and Public, Getters and Setters, Protected. Why Interface is important (Class Heritage). Abstract classes. Generics. Generics in Array and Arrow functions. Generic Classes.
 
-- Generics, Generics in Array and Arrow functions, Generic Classes
-
-- Type Narrowing, The in operator narrowing, `Instanceof` and Type Predicates
-
-- Discriminated Union and Exhaustiveness Checking with never
+5. Type Narrowing. The `in` operator narrowing. `instanceof` and Type Predicates. Discriminated Union. Exhaustiveness Checking with never.
 
 - TypeScript End
 
@@ -227,7 +223,7 @@ We can use `implements` clause to check if the class fulfil the interface(s).
 > Remark! an `implements` clause is only a check that the class can be treated as the interface type. It doesn’t change the type of the class or its methods _at all_. A common source of error is to assume that an `implements` clause will change the class type - it doesn’t!
 > Similarly, implementing an interface with an optional property doesn’t create that property.
 
-### 5 - Abstract Classes
+### 6 - Abstract Classes
 
 Classes, methods, and fields in TypeScript may be _abstract_.
 
@@ -239,8 +235,105 @@ The role of abstract classes is to serve as a base class for subclasses which do
 |------------|----------|
 | `implements` | `extends`  |
 
+### 7 - Generics
+
+In languages like C# and Java, one of the main tools in the toolbox for creating reusable components is _generics_, that is, being able to create a component that can work over a variety of types rather than a single one. This allows users to consume these components and use their own types.
+
+See [here](https://www.typescriptlang.org/docs/handbook/2/generics.html)
+
+The `keyof` operator takes an object type and produces a string or numeric literal union of its keys.
+
+TypeScript adds a `typeof` operator you can use in a _type_ context to refer to the _type_ of a variable or property.
+
+Sometimes we want to **constrain** a function to work with types that have a particular property. To do so, we must list our requirement as a constrain on what `Type` can be. 
+
+Example:
+```ts
+interface MyInterface {
+	myProp: string
+}
+
+function myFunction<Type extends MyInterface>(arg: Type): Type {
+	console.log(arg.myProp); // Now we know it has this property
+	return arg
+}
+```
+
+> Remark! Because the generic function is now constrained, it will no longer work over any and all types.
+
+
+We can declare a type parameter that is constrained by another type parameter. For example, here we’d like to get a property from an object given its name. We’d like to ensure that we’re not accidentally grabbing a property that does not exist on the `obj`, so we’ll place a constraint between the two types:
+
+```ts
+function getProperty<Type, Key extends keyof Type>(obj: Type, key: Key) {
+	return obj[key];
+}
+
+let x = {a: 1, b: 2, c: 3}
+getProperty(x, "a") // ok
+getProperty(x, "d") // Error!
+```
+
+A generic class has a similar shape to a generic interface. Generic classes have a generic type parameter list in angle brackets (`<>`) following the name of the class. Just as with interface, putting the type parameter on the class itself lets us make sure all of the properties of the class are working with the same type.
+
+
+
+## Lesson 5
+
+### 1 - Type Narrowing
+
+JavaScript supports a `typeof` operator which can give very basic information about the type of values we have at runtime. TypeScript expects this to return a certain set of strings: `"string"`. `"number"`, `"bigint"`, `"boolean"`, `"symbol"`, `"undefined"`, `"object"`, `"function"`.
+
+> Notice that in the list above, `typeof` doesn’t return the string `null`. In JavaScript, `typeof null` is actually `"object"`.
+
+When we decide to check the type, by using an `if` construct, we have to test a condition in order to take decisions and execute one branch or the other. 
+
+`0`, `Nan`, `""` (empty string), `0n` (`bigint` zero), `null`, and `undefined` all coerce to `false`, while all the other values get coerced to `true`.
+
+
+When an equality check like `===`, `!==` is used, we check that the two arguments are both equal (not equal), and TS knew their types also had to be equal. In this case, we can use any valid method for that type (string, number, etc).
+> `null === undefined` -> false
+`undefined === null` -> false 
+
+JavaScript’s looser equality checks with `==` and `!=` also get narrowed correctly. 
+
+
+`== null` actually not only checks whether it is specifically the value `null` - it also checks whether it’s potentially `undefined`. The same applies to `== undefined`: it checks whether a value is either `null` or `undefined`.
+
+> `null == undefined` -> true 
+`undefined == null` -> true 
+
+ 
+### 2 - The `in` operator narrowing
+
+
+JavaScript has an operator for determining if an object or its prototype chain has a property with a name: the `in` operator. TypeScript takes this into account as a way to narrow down potential types.
+
+See [documentation](https://www.typescriptlang.org/docs/handbook/2/narrowing.html#the-in-operator-narrowing) for more details
+
+### 3 - `instanceof` and Type Predicates
+
+JavaScript has an operator for checking whether or not a value is an “instance” of another value. More specifically, in JavaScript `x instanceof Foo` checks whether the _prototype chain_ of `x` contains `Foo.prototype`. `instanceof` is also a type guard, and TypeScript narrows in branches guarded by `instanceof`s.
+
+
+To define a user-defined type guard, we simply need to define a function whose return type is a _type predicate_. A predicate takes the form `parameterName is Type`, where `parameterName` must be the name of a parameter from the current function signature.
+
+See example [here](https://www.typescriptlang.org/docs/handbook/2/narrowing.html#using-type-predicates).
+
+### 4 - Discriminated Union. Exhaustiveness Checking with `never`.
+
+When every type in a union contains a common property with literal types, TypeScript considers that to be a _discriminated union_, and can narrow out the members of the union. That common property is what’s considered a _discriminant_ property of the union type. 
+
+> The important thing here is the encoding of the union type. Communicating the right information to TypeScript - that the two starting types are really two separate types with specific common field - is crucial.
+
+When narrowing, we can reduce the options of a union to a point where we have removed all possibilities and have nothing left. In those cases, TypeScript will use a `never` type to represent a state which shouldn’t exist.
+
+The `never` type is assignable to every type; however, no type is assignable to `never` (except `never` itself). This means we can use narrowing and rely on `never` turning up to do exhaustive checking in a `switch` statement.
+
+
 
 ## References
 
 - [Full video](https://youtu.be/30LWjhZzg50)
 - [TypeScriptLang](https://www.typescriptlang.org/)
+
